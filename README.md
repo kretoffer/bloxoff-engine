@@ -12,7 +12,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/kretoffer/bloxoff-engine">
-    <img src="./docs/logo.jpg" alt="Logo" width="180" height="180">
+    <img src="./docs/logo.svg" alt="Logo" width="180" height="180">
   </a>
 
   <h2 align="center">Bloxoff Engine</h2>
