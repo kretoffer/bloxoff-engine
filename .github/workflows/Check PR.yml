@@ -1,0 +1,53 @@
+name: Check PR
+
+on:
+  pull_request:
+    branches:
+      - development
+      - main
+    paths:
+      - .github/workflows/Check PR.yml
+      - src/**
+      - tests/**
+      - CMakeLists.txt
+      - conanfile.txt
+      - .github/workflows/Check PR.yml
+
+jobs:
+  build-and-test:
+    name: Build, Lint, and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y clang-tidy cmake g++ python3-pip
+          pip install conan
+
+      - name: Configure Conan profile
+        run: |
+          conan profile detect --force
+
+      - name: Install dependencies with Conan
+        run: |
+          conan install . --output-folder=build --build=missing
+
+      - name: Configure project with CMake
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
+                -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+                -DCMAKE_TOOLCHAIN_FILE=build/conan_toolchain.cmake
+
+      - name: Run clang-tidy
+        run: |
+          clang-tidy src/*.cpp -- -Iinclude
+
+      - name: Build project
+        run: cmake --build build --config Release
+
+      - name: Run tests
+        run: ctest --test-dir build --output-on-failure
