@@ -1,0 +1,86 @@
+name: Release
+
+on:
+  workflow_run:
+    workflows: ["Main"]
+    types:
+      - completed
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    if: |
+      github.event.workflow_run.conclusion == 'success' &&
+      startsWith(github.event.workflow_run.head_commit.message, 'v')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install deps (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get update && sudo apt-get install -y cmake g++ python3-pip
+
+      - name: Install deps (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' --yes
+          choco install python
+
+      - name: Install deps (macOS)
+        if: matrix.os == 'macos-latest'
+        run: brew install cmake python
+
+      - name: Install Conan
+        run: pip install conan
+
+      - name: Configure Conan profile
+        run: conan profile detect --force
+
+      - name: Install dependencies with Conan
+        run: conan install . --output-folder=build --build=missing
+
+      - name: Configure CMake
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=build/conan_toolchain.cmake
+
+      - name: Build
+        run: cmake --build build --config Release
+
+      - name: Package artifact
+        run: |
+          cd build
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            7z a ../myproject-${{ github.ref_name }}-win.zip .
+          elif [ "${{ matrix.os }}" = "macos-latest" ]; then
+            tar czf ../myproject-${{ github.ref_name }}-mac.tar.gz .
+          else
+            tar czf ../myproject-${{ github.ref_name }}-linux.tar.gz .
+          fi
+        shell: bash
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.os }}-artifact
+          path: |
+            myproject-${{ github.ref_name }}-*.zip
+            myproject-${{ github.ref_name }}-*.tar.gz
+
+  release:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          path: .
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: myproject-*.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}

@@ -1,19 +1,19 @@
-name: Check PR
+name: Main
 
 on:
-  pull_request:
+  push:
     branches:
-      - development
       - main
     paths:
-      - .github/workflows/Check PR.yml
+      - .github/workflows/Main.yml
+      - .github/workflows/Release.yml
       - src/**
       - tests/**
       - CMakeLists.txt
       - conanfile.txt
 
 jobs:
-  build-and-test:
+  test:
     name: Build, Lint, and Test
     runs-on: ubuntu-latest
 
@@ -24,7 +24,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt update
-          sudo apt install -y clang-tidy cmake g++ python3-pip
+          sudo apt install -y clang-tidy cmake g++ python3-pip lcov
           pip install conan
 
       - name: Configure Conan profile
@@ -50,3 +50,18 @@ jobs:
 
       - name: Run tests
         run: ctest --test-dir build --output-on-failure
+
+      - name: Capture coverage report
+        run: |
+          lcov --directory build --capture --output-file coverage.info
+          lcov --remove coverage.info '/usr/*' '*/conan/*' --output-file coverage.info
+          lcov --list coverage.info
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage.info
+          token: ${{ secrets.CODECOV_TOKEN }} # если репозиторий приватный
+          flags: unittests
+          fail_ci_if_error: true
+          slug: kretoffer/bloxoff-engine
