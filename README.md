@@ -85,7 +85,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 [license-url]: https://github.com/kretoffer/bloxoff-engine/blob/master/LICENSE
 [codecov-shield]: https://codecov.io/gh/kretoffer/bloxoff-engine/branch/main/graph/badge.svg
 [actions-url]: https://github.com/kretoffer/bloxoff-engine/actions
-[tests-shield]: https://github.com/kretoffer/bloxoff-engine/workflows/Main.yml/badge.svg
+[tests-shield]: https://github.com/kretoffer/bloxoff-engine/actions/workflows/Main.yml/badge.svg
 [wiki-shield]: https://github.com/kretoffer/bloxoff-engine/actions/workflows/Deploy%20Wiki.yml/badge.svg?branch=main
 [codecov-url]: https://github.com/kretoffer/bloxoff-engine/actions
-[release-shield]: https://github.com/kretoffer/bloxoff-engine/workflows/Release.yml/badge.svg
+[release-shield]: https://github.com/kretoffer/bloxoff-engine/actions/workflows/Release.yml/badge.svg
