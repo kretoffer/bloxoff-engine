@@ -1,0 +1,78 @@
+BasedOnStyle: LLVM
+Standard: Cpp17
+
+# Общие правила
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ColumnLimit: 120
+PointerAlignment: Left
+AccessModifierOffset: -2
+ContinuationIndentWidth: 8
+NamespaceIndentation: None
+IndentCaseLabels: true
+IndentPPDirectives: AfterHash
+KeepEmptyLinesAtTheStartOfBlocks: false
+ReflowComments: true
+SortIncludes: true
+SortUsingDeclarations: true
+Cpp11BracedListStyle: true
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortBlocksOnASingleLine: Never
+AlwaysBreakTemplateDeclarations: Yes
+BinPackArguments: false
+BinPackParameters: false
+BreakBeforeBinaryOperators: NonAssignment
+SpaceAfterCStyleCast: true
+SpaceBeforeParens: ControlStatements
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+SpacesInAngles: Never
+SpacesInCStyleCastParentheses: false
+
+# Скобки (Stroustrup-подобный стиль)
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterClass: true
+  AfterControlStatement: false
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: false
+  AfterStruct: true
+  AfterUnion: true
+  BeforeCatch: true
+  BeforeElse: true
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+  SplitEmptyNamespace: false
+
+# Инициализаторы конструкторов
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+BreakConstructorInitializers: BeforeColon
+SpaceBeforeCtorInitializerColon: true
+
+# Выравнивания
+AlignAfterOpenBracket: Align
+AlignEscapedNewlines: Left
+AlignOperands: true
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
+
+# Инклюды и их группировка
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex: '^"(src|include)/.*"'
+    Priority: 1
+  - Regex: '^".*"'
+    Priority: 2
+  - Regex: '^<GLFW/.*>'
+    Priority: 3
+  - Regex: '^<glad/.*>'
+    Priority: 3
+  - Regex: '^<glm/.*>'
+    Priority: 3
+  - Regex: '^<.*>'
+    Priority: 4
+IncludeIsMainRegex: '([-_](test|unittest))?$'
