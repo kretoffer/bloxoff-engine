@@ -1,25 +1,18 @@
-name: Deploy Wiki
-
+name: Deploy wiki
 on:
   push:
     branches:
       - main
     paths:
       - docs/wiki/**
-
+concurrency:
+  group: publish-wiki
+  cancel-in-progress: true
+permissions:
+  contents: write
 jobs:
-  deploy-wiki:
-    name: Push Wiki
+  publish-wiki:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Push wiki changes
-        uses: Andrew-Chen-Wang/github-wiki-action@v2
-        env:
-          WIKI_DIR: docs/wiki
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          GH_MAIL: ${{ secrets.GH_MAIL }}
-          GH_NAME: ${{ github.repository_owner }}
+      - uses: actions/checkout@v3
+      - uses: Andrew-Chen-Wang/github-wiki-action@v4
