@@ -1,34 +1,23 @@
-cmake_minimum_required(VERSION 3.16)
-project(bloxoff_engine VERSION 0.1.0 LANGUAGES CXX)
+set(PROJECT_NAME bloxoff_engine)
+
+cmake_minimum_required(VERSION 3.15)
+project(${PROJECT_NAME} LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_library(bloxoff_engine
-    src/engine.cpp
-    src/renderer.cpp
-)
+# Connect Conan toolchain
+include(${CMAKE_BINARY_DIR}/conan_toolchain.cmake OPTIONAL RESULT_VARIABLE _toolchain_included)
+if(NOT _toolchain_included)
+    message(FATAL_ERROR "Conan toolchain not found. Run 'conan install . --output-folder=build --build=missing'")
+endif()
 
-target_include_directories(bloxoff_engine
-    PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
-)
+# Add src
+add_executable(${PROJECT_NAME} src/main.cpp)
 
-find_package(OpenGL REQUIRED)
-target_link_libraries(bloxoff_engine PUBLIC OpenGL::GL)
+# Install requirements Conan
+find_package(glfw3 REQUIRED)
+find_package(glad REQUIRED)
 
-include(GNUInstallDirs)
-install(TARGETS bloxoff_engine
-    EXPORT bloxoff_engineTargets
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
-install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+target_link_libraries(${PROJECT_NAME} glfw glad::glad)
 
-install(EXPORT bloxoff_engineTargets
-    FILE bloxoff_engineConfig.cmake
-    NAMESPACE bloxoff_engine::
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/bloxoff_engine
-)
