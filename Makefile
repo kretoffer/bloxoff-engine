@@ -21,3 +21,6 @@ all:
 	configure
 	build
 	run
+
+clean:
+	@rm -rf build

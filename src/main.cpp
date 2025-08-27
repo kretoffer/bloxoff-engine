@@ -1,6 +1,5 @@
 #include <Application.hpp>
 #include <memory>
-#include <iostream>
 
 class MyApp: public BloxoffEngine::Application
 {
