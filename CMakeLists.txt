@@ -20,7 +20,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC includes)
 
 # Install requirements Conan
 find_package(glfw3 REQUIRED)
-find_package(glad REQUIRED)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE glfw glad::glad)
+target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
 
