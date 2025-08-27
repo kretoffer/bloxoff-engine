@@ -1,37 +1,17 @@
-#include <GLFW/glfw3.h>
+#include <Application.hpp>
+#include <memory>
+#include <iostream>
 
-int main(void)
+class MyApp: public BloxoffEngine::Application
 {
-    GLFWwindow* window;
 
-    /* Initialize the library */
-    if (!glfwInit())
-        return -1;
+};
 
-    /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
-    if (!window)
-    {
-        glfwTerminate();
-        return -1;
-    }
+int main()
+{
+    auto app = std::make_unique<MyApp>();
 
-    /* Make the window's context current */
-    glfwMakeContextCurrent(window);
+    int returnCode = app -> run(1024, 512, "hello");
 
-    /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window))
-    {
-        /* Render here */
-        //glClear(GL_COLOR_BUFFER_BIT);
-
-        /* Swap front and back buffers */
-        glfwSwapBuffers(window);
-
-        /* Poll for and process events */
-        glfwPollEvents();
-    }
-
-    glfwTerminate();
-    return 0;
+    return returnCode;
 }
