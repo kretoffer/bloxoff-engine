@@ -9,9 +9,7 @@ namespace BloxoffEngine {
     static bool s_GLFW_initialized = false;
 
     Window::Window(std::string title, const unsigned int width, const unsigned int height)
-        : m_title(std::move(title)),
-        m_width(width),
-        m_height(height)
+        : m_data({ std::move(title), width, height })
     {
         int resCode = init();
     }
@@ -21,7 +19,7 @@ namespace BloxoffEngine {
 
     int Window::init(){
         //Awake();
-        LOG_INFO("Awake worked correctly");
+        //LOG_INFO("Awake worked correctly");
 
         /* Initialize the library */
         if (!glfwInit())
@@ -32,12 +30,12 @@ namespace BloxoffEngine {
         s_GLFW_initialized = true;
         LOG_INFO("glfw was initialized");
         /* Create a windowed mode window and its OpenGL context */
-        m_pWindow = glfwCreateWindow(m_width, m_height, m_title.c_str(), nullptr, nullptr);
+        m_pWindow = glfwCreateWindow(m_data.width, m_data.height, m_data.title.c_str(), nullptr, nullptr);
         if (!m_pWindow)
         {
             LOG_CRIT("window wasn't created");
             glfwTerminate();
-            return -1;
+            return -2;
         }
         LOG_INFO("window was created");
 
@@ -49,13 +47,29 @@ namespace BloxoffEngine {
         {
             LOG_CRIT("glad wasn't initialized");
             glfwTerminate();
-            return -1;
+            return -3;
         }
         LOG_INFO("glad was initialized");
 
 
         //Start();
-        LOG_INFO("Start worked correctly");
+        //LOG_INFO("Start worked correctly");
+
+        glfwSetWindowUserPointer(m_pWindow, &m_data);
+
+        glfwSetWindowSizeCallback(m_pWindow,
+            [](GLFWwindow* pWindow, int width, int height)
+            {
+                WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(pWindow));
+                data.width = width;
+                data.height = height;
+
+                Event event;
+                event.width = width;
+                event.height = height;
+                data.eventCallbackFn(event);
+            }
+        );
 
         return 0;
     }
