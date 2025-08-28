@@ -1,5 +1,6 @@
 [requires]
 glfw/3.3.8
+glad/0.1.36
 spdlog/1.15.3
 
 [generators]

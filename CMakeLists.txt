@@ -15,15 +15,18 @@ endif()
 # Add src
 add_executable(${PROJECT_NAME} src/main.cpp
     src/Application.cpp
+    src/Window.cpp
 )
 target_include_directories(${PROJECT_NAME} PUBLIC includes)
 
 # Install requirements Conan
 find_package(glfw3 REQUIRED)
 find_package(spdlog REQUIRED)
+find_package(glad REQUIRED)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE 
     glfw
     spdlog::spdlog
+    glad::glad
 )
 

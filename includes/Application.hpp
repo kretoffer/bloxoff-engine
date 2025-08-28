@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 namespace BloxoffEngine {
     class Application {
     public:
@@ -16,5 +18,8 @@ namespace BloxoffEngine {
         virtual int run(unsigned int width, unsigned int height, const char* title);
 
         virtual void Update() {}
+
+    private:
+        std::unique_ptr<class Window> m_pWindow;
     };
 }
